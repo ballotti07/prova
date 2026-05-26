@@ -958,21 +958,20 @@ function setupGitHubIntegration() {
     spinner.className = 'fa-solid fa-spinner fa-spin';
     statusTitle.textContent = 'Inizializzazione caricamento...';
     statusLog.textContent = '> Avvio pubblicazione automatica cloud\n';
-
     statusLog.textContent += `> Verifica repository GitHub: https://github.com/${owner}/${repo}\n`;
     
     // Step 1: Ottieni lo SHA corrente di data.json dal repository per l'aggiornamento
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/data.json`;
+    const getUrl = `${url}?t=${Date.now()}`;
     
     statusTitle.textContent = 'Connessione a GitHub in corso...';
     statusLog.textContent += '> Richiesta SHA del file corrente su GitHub...\n';
 
-    fetch(url, {
+    fetch(getUrl, {
       method: 'GET',
       headers: {
         'Authorization': `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Cache-Control': 'no-cache'
+        'Accept': 'application/vnd.github.v3+json'
       }
     })
     .then(res => {
