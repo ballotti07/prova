@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pannello Gestionale (CMS) | Associazione Orizzonti Verdi</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=1.0.2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="admin-body">
@@ -405,7 +405,7 @@
             <label for="init-form-imageUrl" class="form-label">Immagine dell'Iniziativa (Link o Caricamento)</label>
             <div style="display: flex; gap: 8px;">
               <input type="text" id="init-form-imageUrl" class="form-control" placeholder="Link immagine o clicca per caricare" style="flex-grow: 1;">
-              <button type="button" class="btn btn-outline" id="btn-browse-init-image" style="padding: 0 16px; font-size: 0.85rem; height: 50px;" title="Sfoglia ed auto-comprimi foto">
+              <button type="button" class="btn btn-outline" id="btn-browse-init-image" onclick="document.getElementById('init-form-file').click()" style="padding: 0 16px; font-size: 0.85rem; height: 50px;" title="Sfoglia ed auto-comprimi foto">
                 <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.1rem; color:var(--primary);"></i>
               </button>
             </div>
@@ -462,7 +462,7 @@
           <label for="doc-form-url" class="form-label">URL Documento / Collegamento (Link o Caricamento)</label>
           <div style="display: flex; gap: 8px;">
             <input type="text" id="doc-form-url" class="form-control" placeholder="Link documento o clicca per caricare un PDF" style="flex-grow: 1;">
-            <button type="button" class="btn btn-outline" id="btn-browse-doc-file" style="padding: 0 16px; font-size: 0.85rem; height: 50px;" title="Sfoglia ed auto-carica PDF">
+            <button type="button" class="btn btn-outline" id="btn-browse-doc-file" onclick="document.getElementById('doc-form-file').click()" style="padding: 0 16px; font-size: 0.85rem; height: 50px;" title="Sfoglia ed auto-carica PDF">
               <i class="fa-solid fa-file-pdf" style="font-size:1.1rem; color:var(--primary);"></i>
             </button>
           </div>
@@ -484,6 +484,6 @@
     <span id="toast-message">Salvataggio completato!</span>
   </div>
 
-  <script src="admin.js"></script>
+  <script src="admin.js?v=1.0.2"></script>
 </body>
 </html>
