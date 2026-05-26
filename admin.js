@@ -6,6 +6,8 @@
 let cmsState = null;
 let hasUnsavedChanges = false;
 let isRunningOnServer = false;
+let pendingInitFile = null;
+let pendingDocFile = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
@@ -444,6 +446,13 @@ function openInitiativeModal(id = null) {
 
   form.reset();
 
+  // Resetta lo stato di caricamento dei file locali
+  pendingInitFile = null;
+  const statusLabel = document.getElementById('init-file-status');
+  if (statusLabel) statusLabel.textContent = '';
+  const fileInput = document.getElementById('init-form-file');
+  if (fileInput) fileInput.value = '';
+
   if (id) {
     // Modifica
     title.textContent = 'Modifica Iniziativa';
@@ -555,6 +564,13 @@ function openDocModal(id = null) {
 
   form.reset();
 
+  // Resetta lo stato del file PDF locale
+  pendingDocFile = null;
+  const statusLabel = document.getElementById('doc-file-status');
+  if (statusLabel) statusLabel.textContent = '';
+  const fileInput = document.getElementById('doc-form-file');
+  if (fileInput) fileInput.value = '';
+
   if (id) {
     title.textContent = 'Modifica Documento';
     const doc = cmsState.transparency.find(item => item.id === id);
@@ -617,25 +633,84 @@ function setupActionListeners() {
       const date = document.getElementById('init-form-date').value;
       const category = document.getElementById('init-form-category').value.trim();
       const status = document.getElementById('init-form-status').value;
-      const imageUrl = document.getElementById('init-form-imageUrl').value.trim();
       const description = document.getElementById('init-form-desc').value.trim();
+      let imageUrl = document.getElementById('init-form-imageUrl').value.trim();
 
-      if (id) {
-        // Modifica esistente
-        const index = cmsState.initiatives.findIndex(item => item.id === id);
-        if (index !== -1) {
-          cmsState.initiatives[index] = { id, title, date, category, status, imageUrl, description };
+      const btnSubmit = document.getElementById('btn-submit-init');
+      const originalBtnText = btnSubmit.innerHTML;
+
+      // Funzione ausiliaria per salvare i dati dell'iniziativa una volta che l'immagine è pronta
+      const saveInitiativeData = (finalImageUrl) => {
+        if (id) {
+          // Modifica esistente
+          const index = cmsState.initiatives.findIndex(item => item.id === id);
+          if (index !== -1) {
+            cmsState.initiatives[index] = { id, title, date, category, status, imageUrl: finalImageUrl, description };
+          }
+        } else {
+          // Genera nuova
+          const newId = `init-${Date.now()}`;
+          cmsState.initiatives.push({ id: newId, title, date, category, status, imageUrl: finalImageUrl, description });
         }
+
+        closeInitiativeModal();
+        renderAdminInitiatives();
+        setUnsavedChanges(true);
+        showToast('Salvataggio iniziativa completato!', 'success');
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = originalBtnText;
+      };
+
+      // Se c'è un file pendente caricato dal pulsante Sfoglia, effettua l'upload prima del salvataggio
+      if (pendingInitFile) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Caricamento foto...';
+        
+        uploadFileDirectly(pendingInitFile.filename, pendingInitFile.base64Data, 
+          (uploadedUrl) => {
+            // Upload completato con successo
+            saveInitiativeData(uploadedUrl);
+          }, 
+          (err) => {
+            // Errore upload
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalBtnText;
+            showToast(`Errore caricamento immagine: ${err.message}`, 'error');
+          }
+        );
       } else {
-        // Genera nuova
-        const newId = `init-${Date.now()}`;
-        cmsState.initiatives.push({ id: newId, title, date, category, status, imageUrl, description });
+        // Altrimenti procedi con il link inserito nel campo di testo
+        if (!imageUrl || imageUrl.startsWith('Caricamento file locale...')) imageUrl = 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800';
+        saveInitiativeData(imageUrl);
+      }
+    });
+  }
+
+  // Modal Iniziative File Picker
+  const btnBrowseInit = document.getElementById('btn-browse-init-image');
+  const fileInputInit = document.getElementById('init-form-file');
+  const fileStatusInit = document.getElementById('init-file-status');
+  
+  if (btnBrowseInit && fileInputInit) {
+    btnBrowseInit.addEventListener('click', () => fileInputInit.click());
+    fileInputInit.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.startsWith('image/')) {
+        showToast('Seleziona un file immagine valido!', 'error');
+        return;
       }
 
-      closeInitiativeModal();
-      renderAdminInitiatives();
-      setUnsavedChanges(true);
-      showToast('Salvataggio iniziativa completato!', 'success');
+      if (fileStatusInit) fileStatusInit.textContent = 'Auto-compressione in corso...';
+      
+      compressImage(file, (compressedBase64, filename) => {
+        pendingInitFile = { filename, base64Data: compressedBase64 };
+        if (fileStatusInit) fileStatusInit.textContent = `Foto pronta: ${filename}`;
+        
+        // Autocompila temporaneamente il campo di testo per dare feedback visivo
+        document.getElementById('init-form-imageUrl').value = `Caricamento file locale...`;
+      });
     });
   }
 
@@ -658,24 +733,82 @@ function setupActionListeners() {
       const title = document.getElementById('doc-form-title').value.trim();
       const year = document.getElementById('doc-form-year').value.trim();
       const category = document.getElementById('doc-form-category').value.trim();
-      const url = document.getElementById('doc-form-url').value.trim();
+      let url = document.getElementById('doc-form-url').value.trim();
 
-      if (id) {
-        // Aggiorna
-        const index = cmsState.transparency.findIndex(item => item.id === id);
-        if (index !== -1) {
-          cmsState.transparency[index] = { id, title, year, category, url };
+      const btnSubmit = document.getElementById('btn-submit-doc');
+      const originalBtnText = btnSubmit.innerHTML;
+
+      // Funzione ausiliaria per salvare i dati una volta che il PDF è pronto
+      const saveDocData = (finalUrl) => {
+        if (id) {
+          // Aggiorna
+          const index = cmsState.transparency.findIndex(item => item.id === id);
+          if (index !== -1) {
+            cmsState.transparency[index] = { id, title, year, category, url: finalUrl };
+          }
+        } else {
+          // Crea nuovo
+          const newId = `trans-${Date.now()}`;
+          cmsState.transparency.push({ id: newId, title, year, category, url: finalUrl });
         }
+
+        closeDocModal();
+        renderAdminDocs();
+        setUnsavedChanges(true);
+        showToast('Documento salvato con successo!', 'success');
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = originalBtnText;
+      };
+
+      // Se c'è un PDF caricato, effettua prima l'upload
+      if (pendingDocFile) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Caricamento PDF...';
+        
+        uploadFileDirectly(pendingDocFile.filename, pendingDocFile.base64Data, 
+          (uploadedUrl) => {
+            saveDocData(uploadedUrl);
+          }, 
+          (err) => {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalBtnText;
+            showToast(`Errore caricamento PDF: ${err.message}`, 'error');
+          }
+        );
       } else {
-        // Crea nuovo
-        const newId = `trans-${Date.now()}`;
-        cmsState.transparency.push({ id: newId, title, year, category, url });
+        if (!url || url.startsWith('Caricamento file locale...')) url = '#';
+        saveDocData(url);
+      }
+    });
+  }
+
+  // Modal Documenti File Picker
+  const btnBrowseDoc = document.getElementById('btn-browse-doc-file');
+  const fileInputDoc = document.getElementById('doc-form-file');
+  const fileStatusDoc = document.getElementById('doc-file-status');
+
+  if (btnBrowseDoc && fileInputDoc) {
+    btnBrowseDoc.addEventListener('click', () => fileInputDoc.click());
+    fileInputDoc.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (file.type !== 'application/pdf') {
+        showToast('Seleziona un file PDF valido!', 'error');
+        return;
       }
 
-      closeDocModal();
-      renderAdminDocs();
-      setUnsavedChanges(true);
-      showToast('Documento salvato con successo!', 'success');
+      if (fileStatusDoc) fileStatusDoc.textContent = 'Caricamento PDF in corso...';
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const cleanName = `doc-${Date.now()}.pdf`;
+        pendingDocFile = { filename: cleanName, base64Data: reader.result };
+        if (fileStatusDoc) fileStatusDoc.textContent = `PDF pronto: ${file.name}`;
+        
+        document.getElementById('doc-form-url').value = `Caricamento file locale...`;
+      };
+      reader.readAsDataURL(file);
     });
   }
 
@@ -1075,4 +1208,111 @@ function setupGitHubIntegration() {
       publishBtn.disabled = false;
     });
   });
+}
+
+// Helper di compressione immagini lato client con Canvas HTML5 (JPEG 75% qualità, max width 1200px)
+function compressImage(file, callback) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+      
+      const MAX_WIDTH = 1200;
+      if (width > MAX_WIDTH) {
+        height = Math.round(height * (MAX_WIDTH / width));
+        width = MAX_WIDTH;
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Esporta come JPEG compresso (75% qualità)
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+      
+      // Genera un nome file univoco pulito in jpeg
+      const cleanName = `img-${Date.now()}.jpg`;
+      
+      callback(compressedDataUrl, cleanName);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// Funzione unificata di upload file (locale tramite server Node / online tramite API di GitHub)
+function uploadFileDirectly(filename, base64Data, successCallback, errorCallback) {
+  if (isRunningOnServer) {
+    // Upload locale
+    fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, base64Data })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Risposta HTTP non valida dal server locale.');
+      return response.json();
+    })
+    .then(result => {
+      if (result.success) {
+        successCallback(result.url); // Ritorna l'URL locale, es. "uploads/img-..."
+      } else {
+        throw new Error(result.error || 'Errore sconosciuto sul server locale.');
+      }
+    })
+    .catch(err => {
+      console.error('Errore durante l\'upload locale:', err);
+      errorCallback(err);
+    });
+  } else {
+    // Upload online su GitHub tramite API
+    const owner = localStorage.getItem('assoc_gh_username');
+    const repo = localStorage.getItem('assoc_gh_repo');
+    const token = localStorage.getItem('assoc_gh_token');
+
+    if (!owner || !repo || !token) {
+      errorCallback(new Error("Parametri GitHub mancanti nelle impostazioni. Assicurati di aver configurato Utente, Repository e Token nella scheda Pubblica!"));
+      return;
+    }
+
+    // Rimuove l'intestazione MIME Base64 prima dell'invio
+    const cleanBase64 = base64Data.replace(/^data:[^;]+;base64,/, '');
+
+    const filePath = `uploads/${filename}`;
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Upload file ${filename} tramite CMS Visuale`,
+        content: cleanBase64
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errData => {
+          throw new Error(errData.message || `Risposta HTTP ${response.status}`);
+        });
+      }
+      return response.json();
+    })
+    .then(result => {
+      // In produzione su GitHub Pages il file sarà raggiungibile sullo stesso percorso relativo!
+      successCallback(filePath);
+    })
+    .catch(err => {
+      console.error('Errore durante l\'upload su GitHub:', err);
+      errorCallback(err);
+    });
+  }
 }

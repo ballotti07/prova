@@ -402,8 +402,15 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="init-form-imageUrl" class="form-label">URL Immagine (Unsplash/Link) *</label>
-            <input type="url" id="init-form-imageUrl" class="form-control" placeholder="Inserisci link immagine (Unsplash)" required>
+            <label for="init-form-imageUrl" class="form-label">Immagine dell'Iniziativa (Link o Caricamento)</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="init-form-imageUrl" class="form-control" placeholder="Link immagine o clicca per caricare" style="flex-grow: 1;">
+              <button type="button" class="btn btn-outline" id="btn-browse-init-image" style="padding: 0 16px; font-size: 0.85rem; height: 50px;" title="Sfoglia ed auto-comprimi foto">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.1rem; color:var(--primary);"></i>
+              </button>
+            </div>
+            <input type="file" id="init-form-file" accept="image/*" style="display: none;">
+            <span id="init-file-status" style="font-size: 0.75rem; color: var(--text-light); margin-top: 4px; display: block;"></span>
           </div>
         </div>
 
@@ -452,8 +459,15 @@
         </div>
 
         <div class="form-group" style="margin-bottom: 24px;">
-          <label for="doc-form-url" class="form-label">URL Documento / Collegamento (o '#' se segnaposto) *</label>
-          <input type="text" id="doc-form-url" class="form-control" required placeholder="Link a Dropbox, Drive o file caricato (es. #)">
+          <label for="doc-form-url" class="form-label">URL Documento / Collegamento (Link o Caricamento)</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="doc-form-url" class="form-control" placeholder="Link documento o clicca per caricare un PDF" style="flex-grow: 1;">
+            <button type="button" class="btn btn-outline" id="btn-browse-doc-file" style="padding: 0 16px; font-size: 0.85rem; height: 50px;" title="Sfoglia ed auto-carica PDF">
+              <i class="fa-solid fa-file-pdf" style="font-size:1.1rem; color:var(--primary);"></i>
+            </button>
+          </div>
+          <input type="file" id="doc-form-file" accept="application/pdf" style="display: none;">
+          <span id="doc-file-status" style="font-size: 0.75rem; color: var(--text-light); margin-top: 4px; display: block;"></span>
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 12px;">

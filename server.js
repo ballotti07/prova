@@ -14,10 +14,58 @@ const MIME_TYPES = {
   '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
+  '.pdf': 'application/pdf',
 };
 
 const server = http.createServer((req, res) => {
   console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);
+
+  // API Endpoint per il caricamento dei file (foto/documenti) direttamente sul disco (CMS locale)
+  if (req.method === 'POST' && req.url === '/api/upload') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        const parsed = JSON.parse(body);
+        const { filename, base64Data } = parsed;
+        
+        if (!filename || !base64Data) {
+          throw new Error('Nome file o dati mancanti');
+        }
+
+        // Pulisce il base64 (rimuove ad es. "data:image/jpeg;base64,")
+        const cleanBase64 = base64Data.replace(/^data:[^;]+;base64,/, '');
+        const buffer = Buffer.from(cleanBase64, 'base64');
+        
+        // Assicura che esista la cartella 'uploads'
+        const uploadDir = path.join(__dirname, 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir);
+        }
+
+        const filePath = path.join(uploadDir, filename);
+        
+        fs.writeFile(filePath, buffer, (err) => {
+          if (err) {
+            console.error('\x1b[31m%s\x1b[0m', `Errore nel caricamento del file: ${err.message}`);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: err.message }));
+            return;
+          }
+          console.log('\x1b[32m%s\x1b[0m', `File '${filename}' caricato con successo localmente in uploads/!`);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, url: `uploads/${filename}` }));
+        });
+      } catch (e) {
+        console.error('\x1b[31m%s\x1b[0m', `Errore nel caricamento del file: ${e.message}`);
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: e.message }));
+      }
+    });
+    return;
+  }
 
   // API Endpoint per il salvataggio dei dati direttamente sul disco (usato dal CMS locale)
   if (req.method === 'POST' && req.url === '/api/save') {
