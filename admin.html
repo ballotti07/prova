@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pannello Gestionale (CMS) | Associazione Orizzonti Verdi</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+
+  <!-- PASSWORD LOGIN OVERLAY -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="glass-premium login-card" id="login-card">
+      <div style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <div class="logo-icon">O</div>
+        <h2 style="font-size: 1.5rem;">Accesso Gestionale</h2>
+        <p class="section-desc" style="font-size: 0.85rem;">Inserisci la chiave d'accesso amministratore per gestire i contenuti del sito vetrina.</p>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="login-password" class="form-label">Password Amministratore</label>
+          <div style="position: relative;">
+            <input type="password" id="login-password" class="form-control" placeholder="Inserisci la password (default: admin)" required style="padding-right: 44px;">
+            <button type="button" id="toggle-pw-visibility" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); cursor: pointer;" aria-label="Mostra password">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <p id="login-error-msg" style="color: var(--danger); font-size: 0.8rem; margin-top: 8px; display: none; font-weight: 600;"></p>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Sblocca Pannello <i class="fa-solid fa-unlock"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN CMS APP INTERFACE -->
+  <div id="cms-interface" style="display: none;">
+    <!-- HEADER -->
+    <header class="admin-header">
+      <div class="container">
+        <div class="logo" style="font-size: 1.25rem;">
+          <div class="logo-icon" style="width:34px; height:34px; font-size: 1.1rem;">O</div>
+          <span id="header-assoc-name">Gestione Associazione</span>
+        </div>
+
+        <div class="nav-actions">
+          <div class="save-status-bar">
+            <div class="save-status-dot" id="save-status-dot"></div>
+            <span id="save-status-text">Tutte le modifiche salvate</span>
+          </div>
+
+          <button class="theme-toggle" id="theme-toggle" aria-label="Cambia tema">
+            <i class="fa-solid fa-moon moon-icon"></i>
+            <i class="fa-solid fa-sun sun-icon"></i>
+          </button>
+
+          <div class="admin-user">
+            <div class="admin-user-avatar">A</div>
+            <button class="btn btn-outline" id="btn-logout" style="padding: 6px 12px; font-size: 0.85rem;">
+              Esci <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ADMIN LAYOUT -->
+    <div class="admin-layout">
+      <!-- SIDEBAR -->
+      <aside class="admin-sidebar">
+        <button class="admin-sidebar-btn active" data-tab="tab-profile">
+          <i class="fa-solid fa-id-card"></i> Profilo Associazione
+        </button>
+        <button class="admin-sidebar-btn" data-tab="tab-initiatives">
+          <i class="fa-solid fa-calendar-days"></i> Iniziative ed Eventi
+        </button>
+        <button class="admin-sidebar-btn" data-tab="tab-transparency">
+          <i class="fa-solid fa-file-shield"></i> Documenti Legali
+        </button>
+        <button class="admin-sidebar-btn" data-tab="tab-settings">
+          <i class="fa-solid fa-floppy-disk"></i> Pubblica e Impostazioni
+        </button>
+      </aside>
+
+      <!-- MAIN CONTENT AREA -->
+      <main class="admin-content">
+        
+        <!-- Tab 1: Profilo Associazione -->
+        <section class="admin-tab active" id="tab-profile">
+          <div class="admin-welcome">
+            <h1 style="font-size: 1.75rem; margin-bottom: 8px;">Profilo Associazione</h1>
+            <p class="section-desc">Gestisci le informazioni descrittive generali, i recapiti legali e lo stile visivo del sito.</p>
+          </div>
+
+          <!-- Card Info Base -->
+          <div class="glass admin-card">
+            <div class="admin-card-header">
+              <h2 class="admin-card-title"><i class="fa-solid fa-circle-info" style="color:var(--primary);"></i> Informazioni Generali</h2>
+            </div>
+            
+            <div class="form-group">
+              <label for="prof-name" class="form-label">Nome dell'Associazione *</label>
+              <input type="text" id="prof-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="prof-slogan" class="form-label">Slogan o Motto (Hero Description) *</label>
+              <input type="text" id="prof-slogan" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="prof-description" class="form-label">Breve Descrizione (Sotto-scheda Filosofia) *</label>
+              <textarea id="prof-description" class="form-control" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="prof-aboutUs" class="form-label">Chi Siamo Completo (Testo esteso a destra) *</label>
+              <textarea id="prof-aboutUs" class="form-control" style="min-height: 160px;" required></textarea>
+            </div>
+          </div>
+
+          <!-- Card Stile Grafico (Colori Brand) -->
+          <div class="glass admin-card">
+            <div class="admin-card-header">
+              <h2 class="admin-card-title"><i class="fa-solid fa-palette" style="color:var(--primary);"></i> Palette Colori Brand</h2>
+            </div>
+            <p class="section-desc" style="font-size: 0.85rem;">Scegli i colori identificativi del tuo marchio. La grafica del sito si adatterà automaticamente.</p>
+            
+            <div class="admin-form-row">
+              <div class="form-group">
+                <label for="prof-primaryColor" class="form-label">Colore Primario (es. pulsanti principali, icone)</label>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <input type="color" id="prof-primaryColor" class="form-control" style="width: 60px; height: 50px; padding: 4px; cursor: pointer;">
+                  <input type="text" id="prof-primaryColor-hex" class="form-control" placeholder="#0d9488" style="font-family: monospace;">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="prof-secondaryColor" class="form-label">Colore Secondario / Accento (es. decorazioni, link)</label>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <input type="color" id="prof-secondaryColor" class="form-control" style="width: 60px; height: 50px; padding: 4px; cursor: pointer;">
+                  <input type="text" id="prof-secondaryColor-hex" class="form-control" placeholder="#f59e0b" style="font-family: monospace;">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Contatti e Dati Social -->
+          <div class="glass admin-card">
+            <div class="admin-card-header">
+              <h2 class="admin-card-title"><i class="fa-solid fa-address-book" style="color:var(--primary);"></i> Contatti e Riferimenti</h2>
+            </div>
+            
+            <div class="admin-form-row">
+              <div class="form-group">
+                <label for="prof-email" class="form-label">Indirizzo E-mail Segreteria *</label>
+                <input type="email" id="prof-email" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="prof-phone" class="form-label">Numero di Telefono *</label>
+                <input type="text" id="prof-phone" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="admin-form-row">
+              <div class="form-group">
+                <label for="prof-address" class="form-label">Sede Legale (Completa di CAP e Provincia) *</label>
+                <input type="text" id="prof-address" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="prof-taxCode" class="form-label">Codice Fiscale dell'Associazione (11 cifre) *</label>
+                <input type="text" id="prof-taxCode" class="form-control" maxLength="11" required>
+              </div>
+            </div>
+
+            <div class="admin-form-row" style="margin-top: 12px;">
+              <div class="form-group">
+                <label for="prof-facebook" class="form-label"><i class="fa-brands fa-facebook"></i> Link Pagina Facebook</label>
+                <input type="url" id="prof-facebook" class="form-control" placeholder="https://facebook.com/pagina">
+              </div>
+              <div class="form-group">
+                <label for="prof-instagram" class="form-label"><i class="fa-brands fa-instagram"></i> Link Profilo Instagram</label>
+                <input type="url" id="prof-instagram" class="form-control" placeholder="https://instagram.com/profilo">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="prof-linkedin" class="form-label"><i class="fa-brands fa-linkedin"></i> Link Pagina LinkedIn</label>
+              <input type="url" id="prof-linkedin" class="form-control" placeholder="https://linkedin.com/company/pagina">
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 2: Iniziative ed Eventi -->
+        <section class="admin-tab" id="tab-initiatives">
+          <div class="admin-welcome" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <h1 style="font-size: 1.75rem; margin-bottom: 8px;">Iniziative ed Eventi</h1>
+              <p class="section-desc">Aggiungi, modifica o cancella le iniziative e gli eventi visualizzati sul sito vetrina.</p>
+            </div>
+            <button class="btn btn-primary" id="btn-add-initiative">
+              Nuova Iniziativa <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+
+          <div class="glass admin-card">
+            <div class="admin-card-header">
+              <h2 class="admin-card-title"><i class="fa-solid fa-list" style="color:var(--primary);"></i> Iniziative in Archivio</h2>
+              <span class="badge badge-primary" id="admin-init-count">0 Iniziative</span>
+            </div>
+            
+            <div class="admin-list" id="admin-initiatives-list">
+              <!-- Rendered dynamically by admin.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 3: Documenti Legali e Trasparenza -->
+        <section class="admin-tab" id="tab-transparency">
+          <div class="admin-welcome" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <h1 style="font-size: 1.75rem; margin-bottom: 8px;">Trasparenza e Documenti</h1>
+              <p class="section-desc">Pubblica documenti legali per ottemperare agli obblighi del Terzo Settore (es. Statuto, Bilanci).</p>
+            </div>
+            <button class="btn btn-primary" id="btn-add-doc">
+              Nuovo Documento <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+
+          <div class="glass admin-card">
+            <div class="admin-card-header">
+              <h2 class="admin-card-title"><i class="fa-solid fa-file-pdf" style="color:var(--primary);"></i> Documentazione Pubblicata</h2>
+              <span class="badge badge-primary" id="admin-doc-count">0 Documenti</span>
+            </div>
+            
+            <div class="admin-list" id="admin-docs-list">
+              <!-- Rendered dynamically by admin.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 4: Salvataggio e Impostazioni -->
+        <section class="admin-tab" id="tab-settings">
+          <div class="admin-welcome">
+            <h1 style="font-size: 1.75rem; margin-bottom: 8px;">Salvataggio e Pubblicazione</h1>
+            <p class="section-desc">Rendi le tue modifiche visibili sul sito web pubblico oppure configura le credenziali d'accesso.</p>
+          </div>
+
+          <div class="admin-form-row">
+            <!-- Card Pubblicazione -->
+            <div class="glass admin-card">
+              <div class="admin-card-header">
+                <h2 class="admin-card-title"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--primary);"></i> Pubblica i Contenuti</h2>
+              </div>
+
+              <!-- Stato Server Locale -->
+              <div id="local-server-status-box" style="padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="save-status-dot" id="server-status-dot" style="width: 12px; height: 12px;"></div>
+                  <strong id="server-status-text">Rilevamento server locale...</strong>
+                </div>
+                <p id="server-status-desc" class="section-desc" style="font-size: 0.82rem;"></p>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 12px;">
+                <!-- Bottone Salva Direttamente (Node.js API) -->
+                <button class="btn btn-primary" id="btn-save-api" disabled style="width: 100%; height: 50px;">
+                  Pubblica Modifiche sul Server <i class="fa-solid fa-server"></i>
+                </button>
+
+                <!-- Bottone Scarica JSON (Offline static CMS) -->
+                <button class="btn btn-outline" id="btn-download-json" style="width: 100%; height: 50px;">
+                  Scarica data.json Aggiornato <i class="fa-solid fa-download"></i>
+                </button>
+
+                <!-- Anteprima Live -->
+                <a href="/" target="_blank" class="btn btn-secondary" style="width: 100%; height: 50px;">
+                  Anteprima Live Sito <i class="fa-solid fa-square-arrow-up-right"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Card Sicurezza (Password) -->
+            <div class="glass admin-card">
+              <div class="admin-card-header">
+                <h2 class="admin-card-title"><i class="fa-solid fa-shield-halved" style="color:var(--primary);"></i> Sicurezza Pannello</h2>
+              </div>
+              <p class="section-desc" style="font-size: 0.85rem;">Modifica la password necessaria per accedere a questa area amministrativa.</p>
+              
+              <div class="form-group" style="margin-top: 12px;">
+                <label for="sett-password" class="form-label">Nuova Password di Accesso</label>
+                <input type="password" id="sett-password" class="form-control" placeholder="Inserisci la nuova password">
+              </div>
+              
+              <div class="form-group">
+                <label for="sett-password-confirm" class="form-label">Conferma Nuova Password</label>
+                <input type="password" id="sett-password-confirm" class="form-control" placeholder="Reinserisci la nuova password per sicurezza">
+                <p id="sett-password-error" style="color: var(--danger); font-size: 0.8rem; margin-top: 8px; display: none; font-weight:600;"></p>
+              </div>
+
+              <button class="btn btn-outline" id="btn-update-password" style="width: 100%; margin-top: 12px;">
+                Aggiorna Password <i class="fa-solid fa-key"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card Pubblicazione Automatica Cloud (GitHub API) -->
+          <div class="glass admin-card" style="margin-top: 32px;">
+            <div class="admin-card-header">
+              <h2 class="admin-card-title"><i class="fa-solid fa-cloud" style="color:var(--primary);"></i> Pubblicazione Automatica Online (GitHub / Netlify)</h2>
+              <span class="badge badge-success">Consigliato</span>
+            </div>
+            
+            <p class="section-desc" style="font-size: 0.85rem;">
+              Collega questo pannello al tuo repository GitHub gratuito. Quando modifichi il sito e clicchi su <strong>"Aggiorna Sito Online"</strong>, il gestionale salverà i dati direttamente su GitHub. 
+              Se il tuo repository è connesso a <strong>Netlify</strong> (o Vercel), il sito online si aggiornerà in automatico a livello mondiale in pochi secondi!
+            </p>
+
+            <div class="admin-form-row">
+              <div class="form-group">
+                <label for="gh-username" class="form-label">Nome Utente o Organizzazione GitHub *</label>
+                <input type="text" id="gh-username" class="form-control" placeholder="Es. orizzontiverdi">
+              </div>
+              <div class="form-group">
+                <label for="gh-repo" class="form-label">Nome del Repository GitHub *</label>
+                <input type="text" id="gh-repo" class="form-control" placeholder="Es. sito-web">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="gh-token" class="form-label">Personal Access Token (PAT) di GitHub *</label>
+              <div style="position: relative;">
+                <input type="password" id="gh-token" class="form-control" placeholder="Es. github_pat_11AAA..." style="padding-right: 44px;">
+                <button type="button" id="toggle-gh-token-visibility" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-light); cursor: pointer;" aria-label="Mostra token">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <p class="section-desc" style="font-size: 0.75rem; margin-top: 6px;">
+                <i class="fa-solid fa-shield-halved" style="color:var(--success);"></i> <strong>Sicurezza:</strong> Il token viene salvato <strong>solamente nel tuo browser</strong> (in locale) e non viene mai trasmesso a server esterni. Serve esclusivamente per inviare le modifiche a GitHub.
+              </p>
+            </div>
+
+            <!-- GitHub Status logs and CTA -->
+            <div id="gh-publish-status-box" style="padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: none; flex-direction: column; gap: 8px; font-size: 0.85rem;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-spinner fa-spin" id="gh-status-spinner" style="color:var(--primary);"></i>
+                <strong id="gh-status-title">Pubblicazione in corso...</strong>
+              </div>
+              <p id="gh-status-log" style="color: var(--text-light); margin: 0; font-family: monospace;"></p>
+            </div>
+
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 12px;">
+              <button class="btn btn-primary" id="btn-publish-github" style="height: 50px; flex-grow: 1;">
+                Aggiorna Sito Online <i class="fa-solid fa-paper-plane"></i>
+              </button>
+              <a href="https://github.com/settings/tokens/new?scopes=repo&description=CMS%20Orizzonti%20Verdi" target="_blank" class="btn btn-outline" style="height: 50px;">
+                Crea Token GitHub <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL: AGGIUNGI / MODIFICA INIZIATIVA -->
+  <div class="modal-overlay" id="modal-init-overlay">
+    <div class="glass-premium modal">
+      <div class="modal-header">
+        <h3 id="modal-init-title">Nuova Iniziativa</h3>
+        <button class="modal-close" id="btn-close-init-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-initiative">
+        <input type="hidden" id="init-form-id">
+        <div class="form-group">
+          <label for="init-form-title" class="form-label">Titolo Iniziativa *</label>
+          <input type="text" id="init-form-title" class="form-control" required placeholder="Es. Mercatino di Sconto Ecologico">
+        </div>
+        
+        <div class="admin-form-row">
+          <div class="form-group">
+            <label for="init-form-date" class="form-label">Data Iniziativa *</label>
+            <input type="date" id="init-form-date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="init-form-category" class="form-label">Categoria *</label>
+            <input type="text" id="init-form-category" class="form-control" list="categories-list" required placeholder="Es. Ambiente, Sociale">
+            <datalist id="categories-list">
+              <option value="Ambiente">
+              <option value="Sociale">
+              <option value="Cultura">
+              <option value="Assemblee">
+            </datalist>
+          </div>
+        </div>
+
+        <div class="admin-form-row">
+          <div class="form-group">
+            <label for="init-form-status" class="form-label">Stato dell'Iniziativa</label>
+            <select id="init-form-status" class="form-control">
+              <option value="In Programma">In Programma / Pianificato</option>
+              <option value="In Corso">In Corso</option>
+              <option value="Completato">Completato</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="init-form-imageUrl" class="form-label">URL Immagine (Unsplash/Link) *</label>
+            <input type="url" id="init-form-imageUrl" class="form-control" placeholder="Inserisci link immagine (Unsplash)" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="init-form-desc" class="form-label">Descrizione Iniziativa *</label>
+          <textarea id="init-form-desc" class="form-control" style="min-height: 100px;" required placeholder="Descrivi brevemente lo scopo dell'iniziativa, data, ora e luogo di ritrovo..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-init">Annulla</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-init">Salva Iniziativa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: AGGIUNGI / MODIFICA DOCUMENTO TRASPARENZA -->
+  <div class="modal-overlay" id="modal-doc-overlay">
+    <div class="glass-premium modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 id="modal-doc-title">Nuovo Documento Legale</h3>
+        <button class="modal-close" id="btn-close-doc-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-document">
+        <input type="hidden" id="doc-form-id">
+        <div class="form-group">
+          <label for="doc-form-title" class="form-label">Titolo del Documento *</label>
+          <input type="text" id="doc-form-title" class="form-control" required placeholder="Es. Bilancio Consuntivo 2026">
+        </div>
+        
+        <div class="admin-form-row">
+          <div class="form-group">
+            <label for="doc-form-year" class="form-label">Anno di Riferimento *</label>
+            <input type="number" id="doc-form-year" class="form-control" value="2026" min="2020" max="2050" required>
+          </div>
+          <div class="form-group">
+            <label for="doc-form-category" class="form-label">Categoria Documento *</label>
+            <input type="text" id="doc-form-category" class="form-control" list="docs-categories-list" required placeholder="Es. Bilanci, Statuto">
+            <datalist id="docs-categories-list">
+              <option value="Statuto e Atto Costitutivo">
+              <option value="Bilanci">
+              <option value="Adempimenti Legge 124/2017">
+              <option value="Verbali Assemblee">
+            </datalist>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="doc-form-url" class="form-label">URL Documento / Collegamento (o '#' se segnaposto) *</label>
+          <input type="text" id="doc-form-url" class="form-control" required placeholder="Link a Dropbox, Drive o file caricato (es. #)">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-doc">Annulla</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-doc">Salva Documento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Template -->
+  <div class="toast" id="toast-notification">
+    <i class="fa-solid fa-circle-check" style="font-size: 1.25rem;"></i>
+    <span id="toast-message">Salvataggio completato!</span>
+  </div>
+
+  <script src="/admin.js"></script>
+</body>
+</html>

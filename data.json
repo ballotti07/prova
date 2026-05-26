@@ -1,0 +1,84 @@
+{
+  "association": {
+    "name": "Associazione Orizzonti Verdi",
+    "slogan": "Insieme per un futuro sostenibile e solidale",
+    "description": "Siamo una neonata associazione di promozione sociale (APS) dedicata a valorizzare il nostro territorio, promuovere la sostenibilità ambientale e sostenere le persone in difficoltà attraverso iniziative culturali e di mutuo soccorso.",
+    "aboutUs": "Fondata nel 2026, l'Associazione Orizzonti Verdi nasce dall'unione di cittadini desiderosi di fare la differenza nella propria comunità. Ci occupiamo di rigenerazione urbana, laboratori educativi per bambini, mercatini del riuso, piantumazione di alberi e incontri culturali volti a riscoprire le tradizioni locali in chiave ecologica. Crediamo nella partecipazione attiva e trasparente di ognuno.",
+    "logoUrl": "",
+    "primaryColor": "#0d9488",
+    "secondaryColor": "#f5740a"
+  },
+  "contacts": {
+    "email": "info@orizzontiverdi.it",
+    "phone": "+39 012 3456789",
+    "address": "Via della Solidarietà, 12 - 40100 Bologna (BO)",
+    "taxCode": "91234567890",
+    "facebook": "https://facebook.com/orizzontiverdi",
+    "instagram": "https://instagram.com/orizzontiverdi",
+    "linkedin": "https://linkedin.com/company/orizzontiverdi"
+  },
+  "initiatives": [
+    {
+      "id": "init-1",
+      "title": "Rigenerazione del Parco Comunale",
+      "date": "2026-06-15",
+      "description": "Una giornata dedicata alla pulizia, sistemazione delle panchine e piantumazione di nuovi arbusti fioriti per api nel nostro parco di quartiere. Porta guanti e sorrisi, al pranzo al sacco ci pensiamo noi!",
+      "category": "Ambiente",
+      "imageUrl": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800",
+      "status": "In Programma"
+    },
+    {
+      "id": "init-2",
+      "title": "Laboratorio di Riciclo Creativo per Bambini",
+      "date": "2026-06-28",
+      "description": "Insegniamo ai più piccoli il valore degli oggetti di scarto! Attraverso giochi e attività creative trasformeremo plastica, cartone e tappi in fantastici giocattoli e decorazioni.",
+      "category": "Sociale",
+      "imageUrl": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=800",
+      "status": "In Programma"
+    },
+    {
+      "id": "init-3",
+      "title": "Incontro Culturale: Storia della nostra Terra",
+      "date": "2026-05-10",
+      "description": "Conferenza e tavola rotonda con storici locali per ripercorrere le origini contadine del nostro territorio e l'evoluzione ecologica del paesaggio agrario negli ultimi cent'anni.",
+      "category": "Cultura",
+      "imageUrl": "https://images.unsplash.com/photo-1505664194779-8bebcb95c553?auto=format&fit=crop&q=80&w=800",
+      "status": "Completato"
+    },
+    {
+      "id": "init-1779817214917",
+      "title": "ciao",
+      "date": "2026-05-26",
+      "category": "Sociale",
+      "status": "In Programma",
+      "imageUrl": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800",
+      "description": "jlgul"
+    }
+  ],
+  "transparency": [
+    {
+      "id": "trans-1",
+      "title": "Atto Costitutivo e Statuto dell'Associazione",
+      "year": "2026",
+      "category": "Statuto e Atto Costitutivo",
+      "url": "#"
+    },
+    {
+      "id": "trans-2",
+      "title": "Bilancio Preventivo dell'Esercizio Finanziario",
+      "year": "2026",
+      "category": "Bilanci",
+      "url": "#"
+    },
+    {
+      "id": "trans-3",
+      "title": "Rendiconto delle Sovvenzioni e Contributi Pubblici Ricevuti",
+      "year": "2026",
+      "category": "Adempimenti Legge 124/2017",
+      "url": "#"
+    }
+  ],
+  "adminSettings": {
+    "password": "admin"
+  }
+}

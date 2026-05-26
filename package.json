@@ -1,0 +1,20 @@
+{
+  "name": "sito-associazione-cms",
+  "version": "1.0.0",
+  "description": "Sito vetrina con CMS integrato per associazioni no-profit",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "association",
+    "cms",
+    "showcase",
+    "static",
+    "local-cms"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "dependencies": {}
+}

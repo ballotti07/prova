@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Pagina Non Trovata | Associazione Orizzonti Verdi</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+
+  <div class="not-found-wrapper">
+    <div class="glass-premium not-found-card">
+      <div class="not-found-num">404</div>
+      <h2>Oops! Pagina non trovata</h2>
+      <p class="section-desc">La risorsa o la pagina che stai cercando potrebbe essere stata rimossa, aver cambiato nome o essere temporaneamente non disponibile.</p>
+      
+      <div style="margin-top: 12px; display: flex; gap: 12px; justify-content: center; width: 100%;">
+        <a href="/" class="btn btn-primary">
+          <i class="fa-solid fa-house"></i> Torna alla Home
+        </a>
+        <a href="javascript:history.back()" class="btn btn-outline">
+          <i class="fa-solid fa-arrow-left"></i> Torna Indietro
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Applica il tema salvato (altrimenti rispetta le preferenze di sistema)
+    const savedTheme = localStorage.getItem('theme') || 
+                       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>
