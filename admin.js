@@ -185,8 +185,12 @@ function setupCMSInterface() {
 }
 
 function checkServerConnection() {
-  // Se la pagina è aperta con il protocollo http o https (e non file://) testiamo la connessione
-  if (window.location.protocol.startsWith('http')) {
+  // Il server locale Node.js con API di salvataggio è attivo solo su localhost/127.0.0.1
+  const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' || 
+                       window.location.hostname.startsWith('192.168.');
+                       
+  if (window.location.protocol.startsWith('http') && isLocalhost) {
     isRunningOnServer = true;
   } else {
     isRunningOnServer = false;

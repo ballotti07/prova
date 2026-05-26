@@ -694,7 +694,7 @@ section {
 
 .initiatives-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 32px;
 }
 
@@ -1491,6 +1491,36 @@ footer {
   section {
     padding: 60px 0;
   }
+  .container {
+    padding: 0 16px;
+  }
+  .hero {
+    padding-top: 100px;
+    padding-bottom: 60px;
+    min-height: auto;
+  }
+  .hero-title {
+    font-size: 2.25rem;
+  }
+  .hero-illustration {
+    height: 260px;
+    max-width: 100%;
+  }
+  .section-title {
+    font-size: 1.75rem;
+  }
+  .about-card, .legal-info-card, .contact-info-panel, .contact-form-panel {
+    padding: 24px 20px;
+  }
+  .about-stat-grid {
+    gap: 12px;
+  }
+  .stat-item {
+    padding: 10px;
+  }
+  .stat-num {
+    font-size: 1.5rem;
+  }
   .mobile-menu-btn {
     display: block;
   }
@@ -1500,6 +1530,8 @@ footer {
     left: 0;
     width: 100%;
     background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     flex-direction: column;
     padding: 30px;
@@ -1535,7 +1567,7 @@ footer {
   .admin-content {
     margin-left: 0;
     width: 100%;
-    padding: 24px 16px;
+    padding: 20px 12px;
   }
   .admin-form-row {
     grid-template-columns: 1fr;
