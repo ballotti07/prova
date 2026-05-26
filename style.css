@@ -1643,6 +1643,14 @@ footer {
   .admin-layout {
     grid-template-columns: 1fr;
   }
+
+  /* CMS Mobile Enhancements */
+  #save-status-text {
+    display: none; /* Nasconde il testo del salvataggio, lasciando solo il pallino luminoso per risparmiare spazio */
+  }
+  .admin-header .logo span {
+    font-size: 1rem; /* Riduce leggermente il testo del logo della navbar nell'admin */
+  }
   .admin-sidebar {
     width: 100%;
     height: auto;
@@ -1650,15 +1658,72 @@ footer {
     top: 0;
     flex-direction: row;
     overflow-x: auto;
-    padding: 12px;
+    padding: 10px 16px;
     border-right: none;
     border-bottom: 1px solid var(--border);
+    scrollbar-width: none; /* Nasconde barra scorrimento Firefox */
+    gap: 12px;
+  }
+  .admin-sidebar::-webkit-scrollbar {
+    display: none; /* Nasconde barra scorrimento Chrome/Safari */
+  }
+  .admin-sidebar-btn {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    white-space: nowrap; /* Impedisce al testo del pulsante laterale di andare a capo in modo antiestetico */
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+  }
+  .admin-sidebar-btn.active {
+    background: var(--primary-glow);
+    border-color: var(--primary);
   }
   .admin-content {
     margin-left: 0;
     width: 100%;
-    padding: 20px 12px;
+    padding: 20px 16px;
   }
+  .admin-welcome h1 {
+    font-size: 1.4rem;
+  }
+  .admin-card {
+    padding: 20px;
+    gap: 16px;
+  }
+  .admin-card-title {
+    font-size: 1.15rem;
+  }
+  
+  /* Adattamento righe dei gestionali su smartphone molto stretti */
+  @media (max-width: 500px) {
+    .admin-item-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px;
+    }
+    .admin-item-actions {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      gap: 8px;
+    }
+    .admin-item-info {
+      width: 100%;
+    }
+    .modal {
+      padding: 20px 16px;
+      width: 94%;
+      margin: 10px;
+    }
+    .modal-header h3 {
+      font-size: 1.25rem;
+    }
+  }
+
   .admin-form-row {
     grid-template-columns: 1fr;
     gap: 12px;
