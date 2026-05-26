@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Controllo sessione esistente
-  if (localStorage.getItem('admin_logged_in') === 'true') {
+  if (sessionStorage.getItem('admin_logged_in') === 'true') {
     showDashboard();
   }
 });
@@ -124,7 +124,7 @@ function handleLogin(e) {
   const validPassword = (cmsState.adminSettings && cmsState.adminSettings.password) || 'admin';
 
   if (password === validPassword) {
-    localStorage.setItem('admin_logged_in', 'true');
+    sessionStorage.setItem('admin_logged_in', 'true');
     errorMsg.style.display = 'none';
     showDashboard();
     showToast('Pannello sbloccato con successo!', 'success');
@@ -684,7 +684,7 @@ function setupActionListeners() {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       if (confirm('Sei sicuro di voler uscire dal gestionale?')) {
-        localStorage.removeItem('admin_logged_in');
+        sessionStorage.removeItem('admin_logged_in');
         window.location.reload();
       }
     });
@@ -903,19 +903,6 @@ function hexToHsl(hex) {
    INTEGRAZIONE PUBBLICAZIONE AUTOMATICA CLOUD (GITHUB API)
    ========================================================================== */
 
-// Helper di offuscamento leggeri per impedire la revoca automatica dei token da parte di GitHub secret scanning
-function obfuscateToken(token) {
-  if (!token) return '';
-  // Inverte la stringa e la codifica in Base64
-  return btoa(token.split('').reverse().join(''));
-}
-
-function deobfuscateToken(obfuscated) {
-  if (!obfuscated) return '';
-  // Decodifica Base64 e inverte di nuovo
-  return atob(obfuscated).split('').reverse().join('');
-}
-
 function setupGitHubIntegration() {
   const ghUsernameInput = document.getElementById('gh-username');
   const ghRepoInput = document.getElementById('gh-repo');
@@ -925,47 +912,20 @@ function setupGitHubIntegration() {
 
   if (!ghUsernameInput || !ghRepoInput || !ghTokenInput || !publishBtn) return;
 
-  // 1. Carica i dati salvati in data.json (con de-offuscamento del token) o fallbacks
-  let defaultUser = localStorage.getItem('assoc_gh_username') || '';
-  let defaultRepo = localStorage.getItem('assoc_gh_repo') || '';
-  let defaultToken = localStorage.getItem('assoc_gh_token') || '';
+  // 1. Carica i dati salvati precedentemente in locale nel browser
+  ghUsernameInput.value = localStorage.getItem('assoc_gh_username') || '';
+  ghRepoInput.value = localStorage.getItem('assoc_gh_repo') || '';
+  ghTokenInput.value = localStorage.getItem('assoc_gh_token') || '';
 
-  const settings = cmsState.adminSettings || {};
-  if (settings.ghUsername) defaultUser = settings.ghUsername;
-  if (settings.ghRepo) defaultRepo = settings.ghRepo;
-  if (settings.ghToken) {
-    try {
-      defaultToken = deobfuscateToken(settings.ghToken);
-    } catch(e) {
-      console.warn("Impossibile decrittografare il Token GitHub salvato:", e);
-    }
-  }
-
-  ghUsernameInput.value = defaultUser;
-  ghRepoInput.value = defaultRepo;
-  ghTokenInput.value = defaultToken;
-
-  // 2. Salva all'inserimento (sia in localStorage che in cmsState per condividerli nel database)
+  // 2. Salva istantaneamente in locale all'inserimento
   ghUsernameInput.addEventListener('input', () => {
-    const val = ghUsernameInput.value.trim();
-    localStorage.setItem('assoc_gh_username', val);
-    if (!cmsState.adminSettings) cmsState.adminSettings = {};
-    cmsState.adminSettings.ghUsername = val;
-    setUnsavedChanges(true);
+    localStorage.setItem('assoc_gh_username', ghUsernameInput.value.trim());
   });
   ghRepoInput.addEventListener('input', () => {
-    const val = ghRepoInput.value.trim();
-    localStorage.setItem('assoc_gh_repo', val);
-    if (!cmsState.adminSettings) cmsState.adminSettings = {};
-    cmsState.adminSettings.ghRepo = val;
-    setUnsavedChanges(true);
+    localStorage.setItem('assoc_gh_repo', ghRepoInput.value.trim());
   });
   ghTokenInput.addEventListener('input', () => {
-    const val = ghTokenInput.value.trim();
-    localStorage.setItem('assoc_gh_token', val);
-    if (!cmsState.adminSettings) cmsState.adminSettings = {};
-    cmsState.adminSettings.ghToken = obfuscateToken(val);
-    setUnsavedChanges(true);
+    localStorage.setItem('assoc_gh_token', ghTokenInput.value.trim());
   });
 
   // 3. Gestore della visibilità del Token
