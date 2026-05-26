@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initContactForm();
   loadData();
+  initScrollReveal();
   
   // Rileva eventuali salvataggi in LocalStorage per anteprime in tempo reale (CMS Sync)
   window.addEventListener('storage', (e) => {
@@ -591,4 +592,35 @@ function hexToHsl(hex) {
     s: Math.round(s * 100),
     l: Math.round(l * 100)
   };
+}
+
+/* ==========================================================================
+   SCROLL REVEAL ENGINE (PREMIUM ENHANCEMENT)
+   ========================================================================== */
+
+function initScrollReveal() {
+  const observerOptions = {
+    threshold: 0.05,
+    rootMargin: '0px 0px -60px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('reveal-active');
+        // Smette di osservare una volta mostrato per ottimizzare le prestazioni
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Applica lo scroll reveal a tutte le sezioni, le schede ed i testi
+  const revealElements = document.querySelectorAll(
+    'section, .glass-premium, .init-card, .about-text-content, .legal-info-card, .contact-form-panel, .contact-info-panel'
+  );
+
+  revealElements.forEach(el => {
+    el.classList.add('reveal-hidden');
+    observer.observe(el);
+  });
 }
