@@ -967,20 +967,34 @@ function setupGitHubIntegration() {
     statusTitle.textContent = 'Connessione a GitHub in corso...';
     statusLog.textContent += '> Richiesta SHA del file corrente su GitHub...\n';
 
+    // Proviamo prima a leggere pubblicamente senza token per evitare qualsiasi blocco preflight CORS
     fetch(getUrl, {
       method: 'GET',
       headers: {
-        'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json'
       }
     })
     .then(res => {
+      // Se fallisce per motivi non-404, proviamo con autenticazione Bearer (caso di repository privato)
+      if (!res.ok && res.status !== 404) {
+        statusLog.textContent += '> Tentativo di lettura autenticata per repository privato...\n';
+        return fetch(getUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        }).then(privateRes => {
+          if (!privateRes.ok && privateRes.status !== 404) {
+            throw new Error(`Impossibile leggere il repository. HTTP: ${privateRes.status}`);
+          }
+          return privateRes.status === 404 ? { sha: null } : privateRes.json();
+        });
+      }
+      
       if (res.status === 404) {
         statusLog.textContent += '> File data.json non trovato nel repository. Verrà creato un nuovo file.\n';
         return { sha: null }; // Nessun SHA necessario per la prima creazione
-      }
-      if (!res.ok) {
-        throw new Error(`Connessione fallita. Codice errore HTTP: ${res.status}`);
       }
       return res.json();
     })
@@ -1016,7 +1030,7 @@ function setupGitHubIntegration() {
       return fetch(url, {
         method: 'PUT',
         headers: {
-          'Authorization': `token ${token}`,
+          'Authorization': `Bearer ${token}`,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
