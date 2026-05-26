@@ -116,7 +116,7 @@ function loadData() {
   }
 
   // 2. Fetch da data.json sul server
-  fetch('data.json')
+  fetch('data.json?t=' + Date.now())
     .then(response => {
       if (!response.ok) throw new Error('File data.json non configurato o non raggiungibile.');
       return response.json();
