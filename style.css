@@ -1644,80 +1644,170 @@ footer {
     grid-template-columns: 1fr;
   }
 
-  /* CMS Mobile Enhancements */
-  #save-status-text {
-    display: none; /* Nasconde il testo del salvataggio, lasciando solo il pallino luminoso per risparmiare spazio */
+  /* CMS Premium Mobile Navigation (iOS-style Bottom Tab Bar) */
+  .admin-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 75px;
+    background: var(--bg-card);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: none;
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+    z-index: 1000;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 8px;
+    margin: 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+
+  .admin-sidebar-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 25%;
+    height: 100%;
+    padding: 8px 2px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-light);
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    white-space: nowrap;
+    text-align: center;
+    flex-shrink: 0;
+    transition: var(--transition);
+  }
+
+  .admin-sidebar-btn i {
+    font-size: 1.3rem;
+    transition: var(--transition);
+  }
+
+  .admin-sidebar-btn:hover {
+    background: transparent;
+    color: var(--primary);
+  }
+
+  .admin-sidebar-btn.active {
+    background: transparent;
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow);
+  }
+  
+  .admin-sidebar-btn.active i {
+    transform: translateY(-2px);
+    color: var(--primary);
+  }
+
+  /* CMS Header Mobile Optimization */
+  .admin-header {
+    height: 60px;
+    box-shadow: var(--shadow-sm);
   }
   .admin-header .logo span {
-    font-size: 1rem; /* Riduce leggermente il testo del logo della navbar nell'admin */
+    font-size: 0.95rem;
   }
-  .admin-sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    top: 0;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 10px 16px;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    scrollbar-width: none; /* Nasconde barra scorrimento Firefox */
-    gap: 12px;
+  .admin-header .logo-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
   }
-  .admin-sidebar::-webkit-scrollbar {
-    display: none; /* Nasconde barra scorrimento Chrome/Safari */
+  .admin-header .admin-user-avatar {
+    display: none; /* Nasconde l'avatar dell'avatar per recuperare spazio */
   }
-  .admin-sidebar-btn {
-    padding: 8px 14px;
-    font-size: 0.85rem;
-    white-space: nowrap; /* Impedisce al testo del pulsante laterale di andare a capo in modo antiestetico */
-    flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border);
+  #save-status-text {
+    display: none; /* Nasconde il testo descrittivo del salvataggio */
   }
-  .admin-sidebar-btn.active {
-    background: var(--primary-glow);
-    border-color: var(--primary);
+  .admin-header .save-status-bar {
+    margin-right: 8px;
   }
+  .admin-header #btn-logout {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    gap: 4px;
+  }
+
+  /* CMS Main Content Area spacing */
   .admin-content {
     margin-left: 0;
     width: 100%;
-    padding: 20px 16px;
+    padding: 20px 16px 110px 16px; /* Spazio extra in basso per evitare coperture con la barra inferiore */
   }
   .admin-welcome h1 {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
+    text-align: center;
+  }
+  .admin-welcome p {
+    text-align: center;
+    font-size: 0.9rem;
   }
   .admin-card {
     padding: 20px;
     gap: 16px;
+    border-radius: var(--radius-md);
   }
   .admin-card-title {
     font-size: 1.15rem;
   }
+  .admin-card-header {
+    padding-bottom: 12px;
+  }
   
-  /* Adattamento righe dei gestionali su smartphone molto stretti */
+  /* Beautiful structured CMS Item Cards on mobile */
   @media (max-width: 500px) {
-    .admin-item-row {
+    .admin-item-row:has(.admin-item-thumbnail) {
       flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
+      align-items: stretch;
+      padding: 0;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+    }
+    .admin-item-row:has(.admin-item-thumbnail) .admin-item-info {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      width: 100%;
+    }
+    .admin-item-row:has(.admin-item-thumbnail) .admin-item-thumbnail {
+      width: 100%;
+      height: 140px;
+      border-radius: 0;
+      border: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-item-row:has(.admin-item-thumbnail) .admin-item-text {
       padding: 16px;
     }
-    .admin-item-actions {
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
-      border-top: 1px solid var(--border);
-      padding-top: 12px;
-      gap: 8px;
+    .admin-item-row:has(.admin-item-thumbnail) .admin-item-title {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
     }
-    .admin-item-info {
+    .admin-item-row:has(.admin-item-thumbnail) .admin-item-actions {
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.03);
+      border-top: 1px solid var(--border);
+      margin-top: 0;
+      justify-content: flex-end;
       width: 100%;
+    }
+    [data-theme="dark"] .admin-item-row:has(.admin-item-thumbnail) .admin-item-actions {
+      background: rgba(255, 255, 255, 0.02);
     }
     .modal {
-      padding: 20px 16px;
-      width: 94%;
+      padding: 24px 16px;
+      width: 95%;
       margin: 10px;
+      border-radius: var(--radius-md);
     }
     .modal-header h3 {
       font-size: 1.25rem;
