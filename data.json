@@ -44,6 +44,15 @@
       "category": "Cultura",
       "imageUrl": "https://images.unsplash.com/photo-1505664194779-8bebcb95c553?auto=format&fit=crop&q=80&w=800",
       "status": "Completato"
+    },
+    {
+      "id": "init-1779825148987",
+      "title": "provaaaaa",
+      "date": "2026-05-26",
+      "category": "Ambiente",
+      "status": "In Programma",
+      "imageUrl": "uploads/img-1779825139826.jpg",
+      "description": "gg"
     }
   ],
   "transparency": [
