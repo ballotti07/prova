@@ -86,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initContactForm();
   loadData();
-  initScrollReveal();
   
   // Rileva eventuali salvataggi in LocalStorage per anteprime in tempo reale (CMS Sync)
   window.addEventListener('storage', (e) => {
@@ -218,6 +217,9 @@ function applyDataToDOM(data) {
 
   // Documenti di Trasparenza
   renderTransparencyDocs(docs);
+
+  // Inizializza o aggiorna Scroll Reveal dopo che tutti i contenuti dinamici sono nel DOM
+  initScrollReveal();
 }
 
 // Converte un colore HEX in HSL per alimentare le variabili di sistema fluide
@@ -599,6 +601,12 @@ function hexToHsl(hex) {
    ========================================================================== */
 
 function initScrollReveal() {
+  // Fail-safe per browser obsoleti o privi di IntersectionObserver
+  if (!('IntersectionObserver' in window)) {
+    console.warn('IntersectionObserver non supportato. Animazioni di scroll disabilitate per compatibilità.');
+    return;
+  }
+
   const observerOptions = {
     threshold: 0.05,
     rootMargin: '0px 0px -60px 0px'
@@ -614,13 +622,16 @@ function initScrollReveal() {
     });
   }, observerOptions);
 
-  // Applica lo scroll reveal a tutte le sezioni, le schede ed i testi
+  // Applica lo scroll reveal solo agli elementi interni, evitando di nascondere intere sezioni (parent)
   const revealElements = document.querySelectorAll(
-    'section, .glass-premium, .init-card, .about-text-content, .legal-info-card, .contact-form-panel, .contact-info-panel'
+    '.glass-premium, .init-card, .about-text-content, .legal-info-card, .contact-form-panel, .contact-info-panel, .doc-item'
   );
 
   revealElements.forEach(el => {
-    el.classList.add('reveal-hidden');
-    observer.observe(el);
+    // Evita di nascondere di nuovo elementi già rivelati o già configurati
+    if (!el.classList.contains('reveal-hidden') && !el.classList.contains('reveal-active')) {
+      el.classList.add('reveal-hidden');
+      observer.observe(el);
+    }
   });
 }
