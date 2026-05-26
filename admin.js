@@ -53,7 +53,7 @@ function loadCMSData() {
     }
   }
 
-  fetch('/data.json')
+  fetch('data.json')
     .then(response => {
       if (!response.ok) throw new Error('File data.json non raggiungibile.');
       return response.json();
